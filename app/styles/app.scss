@@ -1,0 +1,26 @@
+// $space-large: 2.5rem;
+// $title-color: #555;
+//
+// .page-title{
+//   color: $title-color;
+//   margin-top: $space-large;
+//   margin-bottom: $space-large;
+// }
+//
+// input[type='search']{
+//   box-shadow: none;
+// }
+
+@import "base/variables";
+
+//Foundation
+@import "base/foundation-settings";
+@import "foundation";
+@include foundation-everything;
+
+//Components
+// @import "components/navigation";
+// @import "components/Clock";
+// @import "components/controls";
+// @import "components/page-title";
+// @import "components/timercontrols";
