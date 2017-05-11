@@ -109,7 +109,7 @@
 	//$(document).foundation();
 
 	// App styles
-	__webpack_require__(360);
+	__webpack_require__(362);
 
 	ReactDOM.render(React.createElement(TodoApp, null), document.getElementById('app'));
 
@@ -25472,13 +25472,16 @@
 	var React = __webpack_require__(229);
 	var ReactDOM = __webpack_require__(164);
 	var TodoList = __webpack_require__(358);
-	var AddTodo = __webpack_require__(364);
+	var AddTodo = __webpack_require__(360);
+	var TodoSearch = __webpack_require__(361);
 
 	var TodoApp = React.createClass({
 	  displayName: 'TodoApp',
 
 	  getInitialState: function getInitialState() {
 	    return {
+	      searchText: '',
+	      showCompleted: false,
 	      todos: [{
 	        id: 1,
 	        text: 'Walk the Dog'
@@ -25497,12 +25500,19 @@
 	  handleAddTodo: function handleAddTodo(newText) {
 	    alert('new Text ' + newText);
 	  },
+	  handleSearch: function handleSearch(searchText, showCompleted) {
+	    this.setState({
+	      searchText: searchText.toLowerCase(),
+	      showCompleted: showCompleted
+	    });
+	  },
 	  render: function render() {
 	    var todos = this.state.todos;
 
 	    return React.createElement(
 	      'div',
 	      null,
+	      React.createElement(TodoSearch, { onSearch: this.handleSearch }),
 	      React.createElement(TodoList, { todos: todos }),
 	      React.createElement(AddTodo, { onAddTodo: this.handleAddTodo })
 	    );
@@ -43714,13 +43724,99 @@
 /* 360 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	var React = __webpack_require__(7);
+
+	var AddTodo = React.createClass({
+	  displayName: 'AddTodo',
+
+
+	  handleSubmit: function handleSubmit(e) {
+	    e.preventDefault();
+	    var text = this.refs.todotext.value;
+	    if (text.length > 0) {
+	      this.refs.todotext.value = "";
+	      this.props.onAddTodo(text);
+	    } else {
+	      this.refs.todotext.focus();
+	    }
+	  },
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'form',
+	        { onSubmit: this.handleSubmit },
+	        React.createElement('input', { type: 'text', ref: 'todotext', placeholder: 'What do you need to do?' }),
+	        React.createElement(
+	          'button',
+	          { className: 'button expended' },
+	          'Add Todo'
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = AddTodo;
+
+/***/ }),
+/* 361 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(7);
+
+	var TodoSearch = React.createClass({
+	  displayName: 'TodoSearch',
+
+
+	  handleSearch: function handleSearch() {
+	    var searchText = this.refs.searchText.value;
+	    var showCompleted = this.refs.showCompleted.checked;
+
+	    this.props.onSearch(searchText, showCompleted);
+	  },
+
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      null,
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement('input', { type: 'search', ref: 'searchText', placeholder: 'Search todos', onChange: this.handleSearch })
+	      ),
+	      React.createElement(
+	        'div',
+	        null,
+	        React.createElement(
+	          'label',
+	          null,
+	          React.createElement('input', { type: 'checkbox', ref: 'showCompleted', onChange: this.handleSearch }),
+	          'Show Completed todos'
+	        )
+	      )
+	    );
+	  }
+	});
+
+	module.exports = TodoSearch;
+
+/***/ }),
+/* 362 */
+/***/ (function(module, exports, __webpack_require__) {
+
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(361);
+	var content = __webpack_require__(363);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(363)(content, {});
+	var update = __webpack_require__(365)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -43737,10 +43833,10 @@
 	}
 
 /***/ }),
-/* 361 */
+/* 363 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(362)();
+	exports = module.exports = __webpack_require__(364)();
 	// imports
 
 
@@ -43751,7 +43847,7 @@
 
 
 /***/ }),
-/* 362 */
+/* 364 */
 /***/ (function(module, exports) {
 
 	/*
@@ -43807,7 +43903,7 @@
 
 
 /***/ }),
-/* 363 */
+/* 365 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -44057,48 +44153,6 @@
 			URL.revokeObjectURL(oldSrc);
 	}
 
-
-/***/ }),
-/* 364 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(7);
-
-	var AddTodo = React.createClass({
-	  displayName: 'AddTodo',
-
-
-	  handleSubmit: function handleSubmit(e) {
-	    e.preventDefault();
-	    var text = this.refs.todotext.value;
-	    if (text.length > 0) {
-	      this.refs.todotext.value = "";
-	      this.props.onAddTodo(text);
-	    } else {
-	      this.refs.todotext.focus();
-	    }
-	  },
-	  render: function render() {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(
-	        'form',
-	        { onSubmit: this.handleSubmit },
-	        React.createElement('input', { type: 'text', ref: 'todotext', placeholder: 'What do you need to do?' }),
-	        React.createElement(
-	          'button',
-	          { className: 'button expended' },
-	          'Add Todo'
-	        )
-	      )
-	    );
-	  }
-	});
-
-	module.exports = AddTodo;
 
 /***/ })
 /******/ ]);
