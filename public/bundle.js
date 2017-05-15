@@ -109,7 +109,7 @@
 	//$(document).foundation();
 
 	// App styles
-	__webpack_require__(423);
+	__webpack_require__(425);
 
 	ReactDOM.render(React.createElement(TodoApp, null), document.getElementById('app'));
 
@@ -25477,6 +25477,7 @@
 	var AddTodo = __webpack_require__(360);
 	var TodoSearch = __webpack_require__(361);
 	var uuid = __webpack_require__(362);
+	var TodoAPi = __webpack_require__(423);
 
 	var TodoApp = React.createClass({
 	  displayName: 'TodoApp',
@@ -25485,24 +25486,11 @@
 	    return {
 	      searchText: '',
 	      showCompleted: false,
-	      todos: [{
-	        id: uuid(),
-	        text: 'Walk the Dog',
-	        completed: true
-	      }, {
-	        id: uuid(),
-	        text: 'Clean the yard',
-	        completed: false
-	      }, {
-	        id: uuid(),
-	        text: 'Leave Mail on cauch',
-	        completed: false
-	      }, {
-	        id: uuid(),
-	        text: 'Play Vedio games',
-	        completed: true
-	      }]
+	      todos: TodoAPi.getTodos()
 	    };
+	  },
+	  componentDidUpdate: function componentDidUpdate() {
+	    TodoAPi.setTodos(this.state.todos);
 	  },
 	  handleAddTodo: function handleAddTodo(text) {
 	    // alert('new Text ' + newText);
@@ -25532,13 +25520,17 @@
 	    });
 	  },
 	  render: function render() {
-	    var todos = this.state.todos;
+	    var _state = this.state,
+	        todos = _state.todos,
+	        showCompleted = _state.showCompleted,
+	        searchText = _state.searchText;
 
+	    var filteredTodos = TodoAPi.filteredTodos(todos, showCompleted, searchText);
 	    return React.createElement(
 	      'div',
 	      null,
 	      React.createElement(TodoSearch, { onSearch: this.handleSearch }),
-	      React.createElement(TodoList, { todos: todos, onToggle: this.handleToggle }),
+	      React.createElement(TodoList, { todos: filteredTodos, onToggle: this.handleToggle }),
 	      React.createElement(AddTodo, { onAddTodo: this.handleAddTodo })
 	    );
 	  }
@@ -52239,13 +52231,76 @@
 /* 423 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	var $ = __webpack_require__(424);
+
+	module.exports = {
+	  setTodos: function setTodos(todos) {
+	    if ($.isArray(todos)) {
+	      localStorage.setItem('todos', JSON.stringify(todos));
+	      return todos;
+	    }
+	  },
+
+	  getTodos: function getTodos() {
+	    var stringTodos = localStorage.getItem('todos');
+	    var todos = [];
+
+	    try {
+	      todos = JSON.parse(stringTodos);
+	    } catch (e) {}
+
+	    return $.isArray ? todos : [];
+	  },
+
+	  filteredTodos: function filteredTodos(todos, showCompleted, searchText) {
+	    var filteredTodos = todos;
+
+	    //Filter by completed items
+
+	    filteredTodos = filteredTodos.filter(function (todo) {
+	      return !todo.completed || showCompleted;
+	    });
+	    //serach by text
+
+	    filteredTodos = filteredTodos.filter(function (todo) {
+	      var text = todo.text.toLowerCase();
+	      return searchText.length === 0 || text.indexOf(searchText) > -1;
+	    });
+	    // Sort by completed
+
+	    filteredTodos.sort(function (a, b) {
+	      if (!a.completed && b.completed) {
+	        return -1;
+	      } else if (a.completed && !b.completed) {
+	        return 1;
+	      } else {
+	        return 0;
+	      }
+	    });
+
+	    return filteredTodos;
+	  }
+	};
+
+/***/ }),
+/* 424 */
+/***/ (function(module, exports) {
+
+	module.exports = jQuery;
+
+/***/ }),
+/* 425 */
+/***/ (function(module, exports, __webpack_require__) {
+
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(424);
+	var content = __webpack_require__(426);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(426)(content, {});
+	var update = __webpack_require__(428)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -52262,10 +52317,10 @@
 	}
 
 /***/ }),
-/* 424 */
+/* 426 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(425)();
+	exports = module.exports = __webpack_require__(427)();
 	// imports
 
 
@@ -52276,7 +52331,7 @@
 
 
 /***/ }),
-/* 425 */
+/* 427 */
 /***/ (function(module, exports) {
 
 	/*
@@ -52332,7 +52387,7 @@
 
 
 /***/ }),
-/* 426 */
+/* 428 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*

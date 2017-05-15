@@ -4,32 +4,18 @@ var TodoList = require('TodoList');
 var AddTodo = require('AddTodo');
 var TodoSearch = require('TodoSearch');
 var uuid = require('node-uuid');
+var TodoAPi = require('TodoAPi');
 
 var TodoApp = React.createClass({
   getInitialState: function(){
     return{
       searchText: '',
       showCompleted: false,
-      todos: [
-        {
-          id: uuid(),
-          text: 'Walk the Dog',
-          completed: true
-        },{
-          id: uuid(),
-          text: 'Clean the yard',
-          completed: false
-        },{
-          id: uuid(),
-          text: 'Leave Mail on cauch',
-          completed: false
-        } , {
-          id: uuid(),
-          text: 'Play Vedio games',
-          completed: true
-        }
-      ]
+      todos: TodoAPi.getTodos()
     }
+  },
+  componentDidUpdate: function() {
+    TodoAPi.setTodos(this.state.todos);
   },
   handleAddTodo: function(text){
     // alert('new Text ' + newText);
@@ -62,11 +48,12 @@ var TodoApp = React.createClass({
     })
   },
   render: function(){
-    var {todos} = this.state;
+    var {todos, showCompleted, searchText} = this.state;
+    var filteredTodos = TodoAPi.filteredTodos(todos, showCompleted, searchText);
     return(
       <div>
         <TodoSearch onSearch={this.handleSearch}/>
-        <TodoList todos={todos} onToggle={this.handleToggle}/>
+        <TodoList todos={filteredTodos} onToggle={this.handleToggle}/>
         <AddTodo onAddTodo={this.handleAddTodo}/>
       </div>
     );
