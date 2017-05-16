@@ -19,6 +19,9 @@
 @include foundation-everything;
 
 //Components
+@import 'components/page-title';
+@import 'components/container';
+@import 'components/todos';
 // @import "components/navigation";
 // @import "components/Clock";
 // @import "components/controls";
